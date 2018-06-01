@@ -25,20 +25,6 @@ public class BaseDatos {
         return null;
     }
 
-    public static boolean guardarCliente(Equipos e){
-        boolean rep = false;
-        for (int x = 0; x < equipos.size(); ++x){
-            if (equipos.get(x).getSerie().equals(e.getSerie())){
-                equipos.remove(x);
-                rep = true;
-            }
-        }
-        if (!rep) {
-            return equipos.add(e);
-        } else {
-            return false;
-        }
-    }
 
     public static boolean equipoAsignado(String serial) {
         for (int x = 0; x < equipos.size(); ++x){

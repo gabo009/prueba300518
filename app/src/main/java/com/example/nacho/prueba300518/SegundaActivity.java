@@ -35,6 +35,7 @@ public class SegundaActivity extends AppCompatActivity {
         tv_ValorEq = (TextView) findViewById(R.id.tv_ValorEq);
         lv_eqCargo = (ListView) findViewById(R.id.lv_eqCargo);
         acv_Serie = (AutoCompleteTextView) findViewById(R.id.acv_Serie);
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             user = BaseDatos.buscarUsuario(bundle.getString("usuario"));
@@ -90,8 +91,6 @@ public class SegundaActivity extends AppCompatActivity {
                 tv_ValorEq.setText("$"+selecAuto.getValor());
             }
         });
-
-
     }
 
     protected void onClic (View v) {
