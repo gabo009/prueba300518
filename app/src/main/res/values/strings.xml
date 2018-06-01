@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">prueba300518</string>
+    <string name="btncancelar">Cancelar</string>
+    <string name="hint_ingresar_usuario">Ingresar usuario</string>
+    <string name="hintclave">Clave</string>
+    <string name="btnaceptar">Aceptar</string>
+    <string name="hintserie">Equipo</string>
+</resources>
