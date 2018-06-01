@@ -26,14 +26,15 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="@string/hint_ingresar_usuario"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/et_Clave"
@@ -55,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="32dp"
         android:onClick="onClic"
         android:text="@string/btnaceptar"
         app:layout_constraintEnd_toEndOf="parent"

@@ -16,13 +16,11 @@ public class SegundaActivity extends AppCompatActivity {
     private TextView tv_nomCompleto, tv_Detpartamento, tv_ValorCargo, tv_TipoEq, tv_ValorEq;
     private AutoCompleteTextView acv_Serie;
     private ListView lv_eqCargo;
-    private Button ibtn_DelCargo;
-    private Button ibtn_AddCargo;
-    private Usuario user;
     private ArrayAdapter<Equipos> adCargo;
     private ArrayAdapter<Equipos> adEq;
-    private Equipos selecAuto;
-    private Equipos selecList;
+    private Usuario user;
+    private Equipos selecAutoComplete;
+    private Equipos selecListView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,95 +41,41 @@ public class SegundaActivity extends AppCompatActivity {
 
         tv_nomCompleto.setText(user.getNombre()+" "+user.getApellido());
         tv_Detpartamento.setText(user.getDepartamento());
-        actualizarAdapterList();
-        actualizarAdapterAuto();
-        acv_Serie.setThreshold(1);
+        actualizarAdapterListView();
+        actualizarAdapterAutoComplete();
+        acv_Serie.setThreshold(5);
         tv_ValorCargo.setText("valor total a cargo: $" + sumarCargo());
 
         lv_eqCargo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                selecList = (Equipos) user.getCargo().get(position);
+                selecListView = (Equipos) user.getCargo().get(position);
             }
         });
-
         lv_eqCargo.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                selecList = (Equipos) user.getCargo().get(position);
-                AlertDialog.Builder builder = new AlertDialog.Builder(SegundaActivity.this);
-                builder.setTitle("Confirmar");
-                builder.setIcon(R.drawable.ic_action_name);
-                builder.setMessage("Esta seguro de que desea quitarle el cargo.");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        quitarEquipo();
-                    }
-                });
-                builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
+                selecListView = (Equipos) user.getCargo().get(position);
+                SegundaActivity.this.quitarEquipo();
                 return true;
             }
         });
 
-
         acv_Serie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                selecAuto = (Equipos) acv_Serie.getAdapter().getItem(position);
-
-                tv_TipoEq.setText(selecAuto.getDescripcion());
-                tv_ValorEq.setText("$"+selecAuto.getValor());
+                selecAutoComplete = (Equipos) acv_Serie.getAdapter().getItem(position);
+                tv_TipoEq.setText(selecAutoComplete.getDescripcion());
+                tv_ValorEq.setText("$"+selecAutoComplete.getValor());
             }
         });
     }
 
     protected void onClic (View v) {
         if (v.getId() == R.id.ibtn_AddCargo) {
-            if (selecAuto != null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(SegundaActivity.this);
-                builder.setTitle("Confirmar");
-                builder.setIcon(R.drawable.ic_action_add);
-                builder.setMessage("Esta seguro de que desea Agregar el Cargo.");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        agregaEquipo();
-                    }
-                });
-                builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-
+            this.agregaEquipo();
         } else if (v.getId() == R.id.ibtn_DelCargo) {
-            if (selecList != null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(SegundaActivity.this);
-                builder.setTitle("Confirmar");
-                builder.setIcon(R.drawable.ic_action_name);
-                builder.setMessage("Esta seguro de que desea quitarle el cargo.");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        quitarEquipo();
-                    }
-                });
-                builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-
+            this.quitarEquipo();
         } else if (v.getId() == R.id.btn_Volver) {
             SegundaActivity.this.finish();
         }
@@ -139,39 +83,65 @@ public class SegundaActivity extends AppCompatActivity {
 
 
 
-    private void actualizarAdapterAuto(){
+    private void actualizarAdapterAutoComplete(){
         adEq = new ArrayAdapter<Equipos>(SegundaActivity.this,android.R.layout.simple_list_item_1,BaseDatos.getEquipos());
         acv_Serie.setAdapter(adEq);
     }
-    private void actualizarAdapterList (){
+    private void actualizarAdapterListView (){
         adCargo = new ArrayAdapter<Equipos>(this, android.R.layout.simple_list_item_1, user.getCargo());
         lv_eqCargo.setAdapter(adCargo);
     }
+
     private void quitarEquipo () {
-
-        user.quitarequipo(selecList.getSerie());
-
-        BaseDatos.getEquipos().add(selecList);
-
-        actualizarAdapterList();
-        actualizarAdapterAuto();
-        tv_ValorCargo.setText("valor total a cargo: $" + sumarCargo());
-        selecList = null;
-
+        if (selecListView != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SegundaActivity.this);
+            builder.setTitle("Confirmar");
+            builder.setIcon(R.drawable.ic_action_name);
+            builder.setMessage("Esta seguro de que desea quitarle el cargo.");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    user.quitarequipo(selecListView.getSerie());
+                    BaseDatos.getEquipos().add(selecListView);
+                    actualizarAdapterListView();
+                    actualizarAdapterAutoComplete();
+                    tv_ValorCargo.setText("valor total a cargo: $" + sumarCargo());
+                    selecListView = null;
+                }
+            });
+            builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
     private void agregaEquipo () {
-
-        user.agregarequipo(selecAuto);
-
-        BaseDatos.equipoAsignado(selecAuto.getSerie());
-
-        actualizarAdapterList();
-        actualizarAdapterAuto();
-        tv_ValorCargo.setText("valor total a cargo: $" + sumarCargo());
-        acv_Serie.setText("");
-        selecAuto = null;
-
+        if (selecAutoComplete != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SegundaActivity.this);
+            builder.setTitle("Confirmar");
+            builder.setIcon(R.drawable.ic_action_add);
+            builder.setMessage("Esta seguro de que desea Agregar el Cargo.");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    user.agregarequipo(selecAutoComplete);
+                    BaseDatos.equipoAsignado(selecAutoComplete.getSerie());
+                    actualizarAdapterListView();
+                    actualizarAdapterAutoComplete();
+                    tv_ValorCargo.setText("valor total a cargo: $" + sumarCargo());
+                    acv_Serie.setText("");
+                    selecAutoComplete = null;
+                }
+            });
+            builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
+
     private int sumarCargo() {
         int sum = 0;
         if (!lv_eqCargo.getAdapter().isEmpty()) {
